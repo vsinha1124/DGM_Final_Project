@@ -196,7 +196,14 @@ class FpoRslRlPpoAlgorithmCfg:  # Keeping name for backwards compatibility
     Also used as the SPO epsilon in 'spo' and 'aspo' modes.
     """
 
-    ratio_mode: str = "hybrid2" 
+    """ratio mode
+    - 'per_action': Standard PPO with hard clipping constraint
+    - 'per_sample': Structured Policy Optimization with quadratic penalty
+    - 'hybrid1': First-half cosine annealing from per action to per sample, second-half per sample
+    - 'hybrid2': linear annealing
+    - 'hybrid3': First-half per action, second-half per sample
+    """
+    ratio_mode: str = "hybrid" 
 
     trust_region_mode: Literal["ppo", "spo", "aspo"] = "aspo"
     """Trust region method to use. Default is 'aspo'.

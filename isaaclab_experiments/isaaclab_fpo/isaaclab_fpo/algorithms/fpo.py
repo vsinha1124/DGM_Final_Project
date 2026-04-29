@@ -446,15 +446,7 @@ class FPO:
             elif self.ratio_mode == "per_sample":
                 # Keep individual samples (FPO++ style)
                 log_ratio = old_cfm_loss_batch - cfm_loss_batch
-            elif self.ratio_mode == "hybrid":
-                # Keep individual samples (FPO++ style)
-                # alpha = curr_iter / total_iter
-                # old_loss = old_cfm_loss_batch.mean(dim=1, keepdim=True)
-                # new_loss = cfm_loss_batch.mean(dim=1, keepdim=True)
-                # log_ratio_pa = old_loss - new_loss
-                # log_ratio_ps = old_cfm_loss_batch - cfm_loss_batch
-                # log_ratio = alpha * log_ratio_ps + (1-alpha) * log_ratio_pa
-
+            elif self.ratio_mode == "hybrid1":
                 # 1. Calculate overall training progress (t goes from 0.0 to 1.0)
                 t = curr_iter / max(1, total_iter)
                 
@@ -478,6 +470,13 @@ class FPO:
                 # 4. Interpolate
                 log_ratio = alpha * log_ratio_ps + (1.0 - alpha) * log_ratio_pa
             elif self.ratio_mode == "hybrid2":
+                alpha = curr_iter / total_iter
+                old_loss = old_cfm_loss_batch.mean(dim=1, keepdim=True)
+                new_loss = cfm_loss_batch.mean(dim=1, keepdim=True)
+                log_ratio_pa = old_loss - new_loss
+                log_ratio_ps = old_cfm_loss_batch - cfm_loss_batch
+                log_ratio = alpha * log_ratio_ps + (1-alpha) * log_ratio_pa
+            elif self.ratio_mode == "hybrid3":
                 # Hard switch at the 50% mark
                 t = curr_iter / max(1, total_iter)
                 if t < 0.5:
