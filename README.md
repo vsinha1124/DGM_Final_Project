@@ -117,43 +117,6 @@ Then open `http://localhost:8080` in your browser.
 
 ---
 
-## Directory Layout
-
-text
-isaaclab_experiments/
-├── isaaclab_fpo/                         # FPO++ package (algorithm + IsaacLab integration)
-│   ├── scripts/
-│   │   ├── train.py                     # Main training entry point
-│   │   ├── play_with_viser.py           # Viser-based policy playback (browser)
-│   │   ├── play.py                      # IsaacSim viewer playback
-│   │   ├── play_plot.py                 # Playback with live reward plotting
-│   ├── viser_assets/                    # Pre-extracted robot meshes for Viser
-│   └── isaaclab_fpo/
-│       ├── task_cfgs.py                 # Per-task FPO++ hyperparameters (TASK_CONFIGS registry)
-│       ├── rl_cfg.py                    # FPO++ config dataclasses
-│       ├── algorithms/fpo.py            # FPO++ algorithm (flow-based PPO)
-│       ├── modules/actor_critic.py      # Flow actor + value critic networks
-│       ├── runners/on_policy_runner.py  # Training loop with EMA, eval, multi-GPU
-│       ├── storage/rollout_storage.py   # Rollout buffer with CFM loss storage
-│       ├── wrapper.py                   # VecEnv wrapper for IsaacLab
-│       ├── cli_args.py                  # CLI argument helpers
-│       └── patches.py                   # IsaacLab monkey-patches for sweep support
-│
-├── thirdparty/
-│   ├── IsaacLab/                        # NVIDIA Isaac Lab (git submodule)
-│   │   └── source/
-│   │       ├── isaaclab/                # Core framework
-│   │       ├── isaaclab_tasks/          # Task definitions (locomotion, etc.)
-│   │       └── isaaclab_assets/         # Robot USD assets & configs
-│
-├── expected_training_curves.png          # Reference training curves
-├── expected_eval_curves.png              # Reference eval curves
-├── setup_env.sh                          # One-time environment setup
-└── source_env.sh                         # Activate conda env
-
-
----
-
 ## Acknowledgements
 
 This reproducibility study adapts work from the original authors of FPO++. Thank you to the **Amazon FAR** team for their foundational implementation:
