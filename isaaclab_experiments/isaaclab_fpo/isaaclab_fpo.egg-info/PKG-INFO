@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: isaaclab_fpo
+Version: 0.2.0
+Requires-Dist: torch~=2.5.1
+Requires-Dist: torchvision~=0.20.1
+Requires-Dist: numpy~=1.26.4
+Requires-Dist: GitPython~=3.1.46
+Requires-Dist: onnx~=1.20.1
+Requires-Dist: viser~=1.0.24
+Dynamic: requires-dist

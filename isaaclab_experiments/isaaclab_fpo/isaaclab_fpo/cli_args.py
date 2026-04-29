@@ -1,0 +1,66 @@
+from __future__ import annotations
+
+import argparse
+import random
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from isaaclab_fpo.rl_cfg import FpoRslRlOnPolicyRunnerCfg
+
+
+def add_fpo_args(parser: argparse.ArgumentParser):
+    """Add FPO arguments to the parser."""
+    arg_group = parser.add_argument_group("fpo", description="Arguments for FPO agent.")
+    arg_group.add_argument(
+        "--experiment_name", type=str, default=None, help="Name of the experiment folder where logs will be stored."
+    )
+    arg_group.add_argument("--run_name", type=str, default=None, help="Run name suffix to the log directory.")
+    arg_group.add_argument("--resume", action="store_true", default=False, help="Whether to resume from a checkpoint.")
+    arg_group.add_argument("--load_run", type=str, default=None, help="Name of the run folder to resume from.")
+    arg_group.add_argument("--checkpoint", type=str, default=None, help="Checkpoint file to resume from.")
+    arg_group.add_argument(
+        "--logger", type=str, default=None, choices={"wandb", "tensorboard", "neptune"}, help="Logger module to use."
+    )
+    arg_group.add_argument(
+        "--log_project_name", type=str, default=None, help="Name of the logging project when using wandb or neptune."
+    )
+
+
+def parse_fpo_cfg(task_name: str, args_cli: argparse.Namespace) -> FpoRslRlOnPolicyRunnerCfg:
+    """Parse configuration for FPO agent based on inputs.
+
+    Looks up the task config from the isaaclab_fpo registry instead of gym kwargs.
+    """
+    from isaaclab_fpo.task_cfgs import TASK_CONFIGS
+
+    if task_name not in TASK_CONFIGS:
+        raise KeyError(
+            f"No FPO config registered for task '{task_name}'. "
+            f"Available tasks: {sorted(TASK_CONFIGS.keys())}"
+        )
+    agent_cfg = TASK_CONFIGS[task_name]()
+    agent_cfg = update_fpo_cfg(agent_cfg, args_cli)
+    return agent_cfg
+
+
+def update_fpo_cfg(agent_cfg: FpoRslRlOnPolicyRunnerCfg, args_cli: argparse.Namespace):
+    """Update configuration for FPO agent based on inputs."""
+    if hasattr(args_cli, "seed") and args_cli.seed is not None:
+        if args_cli.seed == -1:
+            args_cli.seed = random.randint(0, 10000)
+        agent_cfg.seed = args_cli.seed
+    if args_cli.resume is not None:
+        agent_cfg.resume = args_cli.resume
+    if args_cli.load_run is not None:
+        agent_cfg.load_run = args_cli.load_run
+    if args_cli.checkpoint is not None:
+        agent_cfg.load_checkpoint = args_cli.checkpoint
+    if args_cli.run_name is not None:
+        agent_cfg.run_name = args_cli.run_name
+    if args_cli.logger is not None:
+        agent_cfg.logger = args_cli.logger
+    if agent_cfg.logger in {"wandb", "neptune"} and args_cli.log_project_name:
+        agent_cfg.wandb_project = args_cli.log_project_name
+        agent_cfg.neptune_project = args_cli.log_project_name
+
+    return agent_cfg
