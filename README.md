@@ -8,13 +8,13 @@ This repository integrates our implementation of FPO++ as an [NVIDIA Isaac Lab](
 
 **Prerequisites**: Linux, NVIDIA GPU with CUDA 12.1+.
 
-bash
+```bash
 # Install everything (conda env, IsaacSim 4.5, IsaacLab, isaaclab_fpo).
 bash setup_env.sh
 
 # Activate the environment (run this at the start of every session).
 source source_env.sh
-
+```
 
 This creates a conda environment named `isaaclab_fpo`.
 
@@ -26,14 +26,13 @@ All FPO++ training is launched via `isaaclab_fpo/scripts/train.py`. Per-task hyp
 
 ### Velocity-Conditioned Locomotion
 
-bash
+```bash
 # Unitree Go2.
 python isaaclab_fpo/scripts/train.py --task Isaac-Velocity-Flat-Unitree-Go2-v0 --headless
 
 # Unitree G1 (humanoid).
 python isaaclab_fpo/scripts/train.py --task Isaac-Velocity-Flat-G1-v0 --headless
-
-
+```
 ### Expected Results & Baselines
 
 **Expected returns** (4096 envs):
@@ -70,13 +69,14 @@ Dictates the specific trust region penalty or clipping mechanism applied to the 
 | **`aspo`** | Asymmetric SPO (Default). Uses standard PPO clipping for positive advantages, and SPO for negative advantages. | `agent.algorithm.trust_region_mode=aspo` |
 
 **Example Command (Sweep-friendly):**
-bash
+```bash
 python isaaclab_fpo/scripts/train.py \
     --task Isaac-Velocity-Flat-Unitree-Go2-v0 --headless \
     agent.algorithm.ratio_mode=hybrid1 \
     agent.algorithm.trust_region_mode=aspo \
     agent.algorithm.learning_rate=3e-4 \
     agent.algorithm.n_samples_per_action=32
+```
 
 
 ### Common Logging & Environment Options
@@ -96,7 +96,7 @@ python isaaclab_fpo/scripts/train.py \
 
 Visualize a trained policy in the browser using [Viser](https://viser.studio/):
 
-bash
+```bash
 # Load checkpoint from a local path.
 python isaaclab_fpo/scripts/play_with_viser.py \
     --task Isaac-Velocity-Flat-Unitree-Go2-v0 \
@@ -109,6 +109,7 @@ python isaaclab_fpo/scripts/play_with_viser.py \
     --wandb-run-path my-entity/my-project/abc123xy \
     --wandb-checkpoint model_1500.pt \
     --headless --viser --num_envs 4
+```
 
 
 Then open `http://localhost:8080` in your browser. 
